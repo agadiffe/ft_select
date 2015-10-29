@@ -6,7 +6,7 @@
 #    By: agadiffe <agadiffe@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/05/14 20:31:10 by agadiffe          #+#    #+#              #
-#    Updated: 2015/10/26 19:23:08 by agadiffe         ###   ########.fr        #
+#    Updated: 2015/10/28 22:05:36 by agadiffe         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,8 +19,13 @@ CC = gcc
 CFLAGS += -Wall -Werror -Wextra -pedantic
 
 SRC_PATH = ./srcs/
-SRC_NAME = main.c	\
-		   is_key.c
+SRC_NAME = main.c					\
+		   key_is.c					\
+		   key_handle.c				\
+		   termcap_init.c			\
+		   termcap_tools_reset.c	\
+		   termcap_tools_window.c	\
+		   list_function.c
 
 SRC = $(addprefix $(SRC_PATH),$(SRC_NAME))
 
@@ -30,6 +35,7 @@ OBJ = $(addprefix $(OBJ_PATH),$(OBJ_NAME))
 
 INC_PATH = ./includes/
 INC = $(addprefix -I,$(INC_PATH))
+INC_FILE = $(INC_PATH)ft_select.h
 
 LIBFT_PATH = ./libft/
 LIBFT_NAME = libft.a
@@ -47,7 +53,7 @@ endif
 # ----------------------------------------------------------------------------
 # MISC |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 # ----------------------------------------------------------------------------
-$(OBJ_PATH)%.o: $(SRC_PATH)%.c
+$(OBJ_PATH)%.o: $(SRC_PATH)%.c $(INC_FILE)
 	@mkdir -p $(OBJ_PATH)
 	$(CC) $(CFLAGS) $(LIBFT_INC) $(INC) -o $@ -c $<
 
