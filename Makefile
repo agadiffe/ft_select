@@ -6,7 +6,7 @@
 #    By: agadiffe <agadiffe@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/05/14 20:31:10 by agadiffe          #+#    #+#              #
-#    Updated: 2015/10/28 22:05:36 by agadiffe         ###   ########.fr        #
+#    Updated: 2015/10/31 21:32:57 by agadiffe         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@
 NAME = ft_select
 
 CC = gcc
-CFLAGS += -Wall -Werror -Wextra -pedantic
+CFLAGS += -Wall -Werror -Wextra
 
 SRC_PATH = ./srcs/
 SRC_NAME = main.c					\
@@ -25,7 +25,8 @@ SRC_NAME = main.c					\
 		   termcap_init.c			\
 		   termcap_tools_reset.c	\
 		   termcap_tools_window.c	\
-		   list_function.c
+		   list_function.c			\
+		   signal.c
 
 SRC = $(addprefix $(SRC_PATH),$(SRC_NAME))
 
@@ -44,8 +45,8 @@ LIBFT = $(addprefix -L,$(LIBFT_PATH))
 LIBFT_INC = $(addprefix -I,$(LIBFT_INC_PATH))
 
 ifeq ($(shell uname), Linux)
-CFLAGS += $(shell ncurses-config --cflags)
-TERMCAP_LIB += $(shell ncurses-config --libs)
+CFLAGS += $(shell pkg-config ncurses --cflags)
+TERMCAP_LIB += $(shell pkg-config ncurses --libs)
 else
 TERMCAP_LIB += -ltermcap
 endif

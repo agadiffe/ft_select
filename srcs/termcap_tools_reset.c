@@ -6,7 +6,7 @@
 /*   By: agadiffe <agadiffe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/10/28 21:43:02 by agadiffe          #+#    #+#             */
-/*   Updated: 2015/10/28 21:56:04 by agadiffe         ###   ########.fr       */
+/*   Updated: 2015/11/01 19:01:35 by agadiffe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,13 +17,13 @@
 
 int		ft_putchar_ret(int c)
 {
-	return (write(1, &c, 1));
+	return (write(get_tty(0), &c, 1));
 }
 
-void	reset_default_term(t_data *term)
+void	reset_default_term(struct termios *term)
 {
-	term->info.c_lflag |= (ICANON | ECHO);
-	if (tcsetattr(0, TCSADRAIN, &term->info) == -1)
+	term->c_lflag |= (ICANON | ECHO);
+	if (tcsetattr(0, 0, term) == -1)
 		ft_error("Can't restore default terminal mode", 1);
 	tputs(tgetstr("te", NULL), 1, ft_putchar_ret);
 	tputs(tgetstr("ve", NULL), 1, ft_putchar_ret);

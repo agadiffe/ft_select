@@ -6,15 +6,31 @@
 /*   By: agadiffe <agadiffe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/10/17 11:48:12 by agadiffe          #+#    #+#             */
-/*   Updated: 2015/10/29 03:33:38 by agadiffe         ###   ########.fr       */
+/*   Updated: 2015/10/31 18:42:26 by agadiffe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 #include "ft_select.h"
 #include <term.h>
+#include <unistd.h>
+#include <fcntl.h>
 
-struct termios	*singleton_backup(void)
+int				get_tty(int close_fd)
+{
+	static int	fd;
+
+	if (!fd)
+	{
+		if ((fd = open("/dev/tty", O_WRONLY)) == -1)
+			ft_error("Can't open tty", 1);
+	}
+	if (close_fd)
+		close(fd);
+	return (fd);
+}
+
+struct termios	*get_backup(void)
 {
 	static struct termios	backup;
 
@@ -23,7 +39,7 @@ struct termios	*singleton_backup(void)
 
 int				main(int ac, char **av)
 {
-	t_data			term;
+	struct termios	term;
 	struct termios	*backup;
 	t_elem			*list;
 
@@ -31,14 +47,16 @@ int				main(int ac, char **av)
 		ft_putendl("usage: ./ft_select arg1 arg2 ...");
 	else
 	{
-		backup = singleton_backup();
-		list = create_list(ac, av);
+		check_signal();
+		backup = get_backup();
+		list = get_list(ac, av);
 		init_term();
 		set_term_in_non_canonic_mode(&term, backup);
 		move_cursor(0, 0);
-		handle_key(list, ac);
-		free_list(list, ac);
+		handle_key(&list, backup);
+		free_list(list);
 		restore_backup_term(backup);
+		get_tty(1);
 	}
 	return (0);
 }
