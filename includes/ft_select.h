@@ -6,7 +6,7 @@
 /*   By: agadiffe <agadiffe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/10/23 21:07:09 by agadiffe          #+#    #+#             */
-/*   Updated: 2015/11/09 22:39:29 by agadiffe         ###   ########.fr       */
+/*   Updated: 2015/11/23 12:17:43 by agadiffe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,6 @@ int					get_tty(int close_fd);
 void				handle_key(t_elem **list, struct termios *backup);
 void				free_list(t_elem *list);
 int					list_get_max_len(t_elem *list);
-int					list_get_max_col_len(t_elem *list, int col);
 int					check_window_size(t_elem *list);
 
 /*

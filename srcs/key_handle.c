@@ -6,7 +6,7 @@
 /*   By: agadiffe <agadiffe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/10/28 22:05:47 by agadiffe          #+#    #+#             */
-/*   Updated: 2015/11/11 00:43:19 by agadiffe         ###   ########.fr       */
+/*   Updated: 2015/11/24 21:00:15 by agadiffe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,84 @@ static void		handle_space(t_elem *list)
 	tmp->selected = tmp->selected ? 0 : 1;
 }
 
+static int		get_nbr_elem_per_col(t_elem *list)
+{
+	t_elem	*tmp;
+	int		nbr_elem_col;
+
+	nbr_elem_col = 1;
+	tmp = list->next;
+	while (tmp->col_n == tmp->next->col_n && tmp->pos_list != 1)
+	{
+		tmp = tmp->next;
+		nbr_elem_col++;
+	}
+	return (nbr_elem_col);
+}
+
+static void		handle_right_and_left(t_elem *list, int right)
+{
+	t_elem	*tmp;
+	int		nbr_col;
+	int		nbr_elem_col;
+	int		nbr_elem_last_col;
+	int		current_pos_elem;
+
+	nbr_col = list->prev->col_n;
+	nbr_elem_col = get_nbr_elem_per_col(list);
+	nbr_elem_last_col = list->prev->pos_y;
+	tmp = get_current_elem(list);
+	tmp->cursor = 0;
+	if (right)
+	{
+		if ((nbr_col == 0 && tmp->pos_y == nbr_elem_col - 1)
+				|| (tmp->col_n == nbr_col - 1 && tmp->pos_y > nbr_elem_last_col
+					&& tmp->col_n != tmp->next->col_n)
+				|| (tmp->pos_list == list->prev->pos_list
+					&& tmp->pos_y == nbr_elem_col))
+			list->cursor = 1;
+		else
+		{
+			current_pos_elem = tmp->pos_y;
+			if ((tmp->col_n == nbr_col - 1 && tmp->pos_y > nbr_elem_last_col)
+					|| tmp->col_n == nbr_col)
+			{
+				tmp = tmp->next;
+				current_pos_elem++;
+			}
+			tmp = tmp->next;
+			while (tmp->pos_y != current_pos_elem)
+				tmp = tmp->next;
+			tmp->cursor = 1;
+		}
+	}
+	else
+	{
+		if (tmp->pos_list == 1
+				&& (nbr_col == 0 || nbr_elem_last_col == nbr_elem_col))
+			list->prev->cursor = 1;
+		else if (tmp->pos_list == 1)
+		{
+			while (tmp->pos_y != nbr_elem_col)
+				tmp = tmp->prev;
+			tmp->cursor = 1;
+		}
+		else
+		{
+			current_pos_elem = tmp->pos_y;
+			if (tmp->col_n == 0)
+			{
+				tmp = tmp->prev;
+				current_pos_elem--;
+			}
+			tmp = tmp->prev;
+			while (tmp->pos_y != current_pos_elem)
+				tmp = tmp->prev;
+			tmp->cursor = 1;
+		}
+	}
+}
+
 static void		handle_arrow(t_elem *list, int key)
 {
 	if (key == UP_KEY)
@@ -54,9 +132,9 @@ static void		handle_arrow(t_elem *list, int key)
 	else if (key == DOWN_KEY)
 		handle_down_and_up(list, 0);
 	else if (key == RIGHT_KEY)
-		ft_putendl_fd("right", get_tty(0));
+		handle_right_and_left(list, 1);
 	else
-		ft_putendl_fd("left", get_tty(0));
+		handle_right_and_left(list, 0);
 }
 
 static void		list_update_pos(t_elem *list, int elem_del)
@@ -73,6 +151,7 @@ static void		list_update_pos(t_elem *list, int elem_del)
 		{
 			tmp->pos_x = tmp->prev->pos_x;
 			tmp->pos_y = tmp->prev->pos_y + 1;
+			tmp->col_n -= 1;
 		}
 		else
 			tmp->pos_y -= 1;
@@ -159,25 +238,6 @@ int				list_get_max_len(t_elem *list)
 	return (max_len);
 }
 
-int				list_get_max_col_len(t_elem *list, int col)
-{
-	int		max_len;
-	t_elem	*tmp;
-
-	tmp = list;
-	while (tmp->col_n != col)
-		tmp = tmp->next;
-	max_len = tmp->len;
-	tmp = tmp->next;
-	while (tmp->col_n == col)
-	{
-		if (max_len < tmp->len)
-			max_len = tmp->len;
-		tmp = tmp->next;
-	}
-	return (max_len);
-}
-
 static int		check_key(t_elem **list, struct termios *backup, char *buf)
 {
 	int		key;
@@ -208,6 +268,7 @@ static void		list_update(t_elem *list, int row_term,
 	t_elem	*tmp;
 	int		i;
 	int		col;
+
 	col = 0;
 	tmp = list;
 	while (nbr_elem)

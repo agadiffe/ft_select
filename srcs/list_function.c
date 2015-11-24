@@ -6,7 +6,7 @@
 /*   By: agadiffe <agadiffe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/10/28 21:58:09 by agadiffe          #+#    #+#             */
-/*   Updated: 2015/11/09 22:21:13 by agadiffe         ###   ########.fr       */
+/*   Updated: 2015/11/24 21:00:53 by agadiffe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ static void		list_push_back_elem(t_elem **list, char *name, int pos_list)
 t_elem			*get_list(int ac, char **av)
 {
 	static t_elem	*list;
-	int		i;
+	int				i;
 
 	if (!list)
 	{
