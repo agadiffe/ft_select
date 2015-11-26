@@ -5,98 +5,73 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: agadiffe <agadiffe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2015/10/28 21:58:09 by agadiffe          #+#    #+#             */
-/*   Updated: 2015/11/24 21:00:53 by agadiffe         ###   ########.fr       */
+/*   Created: 2015/11/26 03:39:56 by agadiffe          #+#    #+#             */
+/*   Updated: 2015/11/26 03:49:36 by agadiffe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
 #include "ft_select.h"
-#include <stdlib.h>
 
-static t_elem	*list_init_first_elem(char *name)
-{
-	t_elem	*list;
-
-	list = (t_elem *)malloc(sizeof(t_elem));
-	list->next = list;
-	list->prev = list;
-	list->name = name;
-	list->len = ft_strlen(name);
-	list->pos_x = 0;
-	list->pos_y = 0;
-	list->selected = 0;
-	list->cursor = 1;
-	list->pos_list = 1;
-	list->col_n = 0;
-	return (list);
-}
-
-static void		list_push_back_elem(t_elem **list, char *name, int pos_list)
+t_elem		*get_current_elem(t_elem *list)
 {
 	t_elem	*tmp;
-	t_elem	*new;
 
-	tmp = *list;
-	while (tmp->pos_list != pos_list - 1)
+	tmp = list;
+	while (tmp->cursor != 1)
 		tmp = tmp->next;
-	new = (t_elem *)malloc(sizeof(t_elem));
-	new->next = (*list);
-	new->prev = tmp;
-	new->name = name;
-	new->len = ft_strlen(name);
-	new->pos_x = 0;
-	new->pos_y = pos_list - 1;
-	new->selected = 0;
-	new->cursor = 0;
-	new->pos_list = pos_list;
-	new->col_n = 0;
-	(*list)->prev = new;
-	tmp->next = new;
+	return (tmp);
 }
 
-t_elem			*get_list(int ac, char **av)
+int			get_nbr_elem_per_col(t_elem *list)
 {
-	static t_elem	*list;
-	int				i;
+	t_elem	*tmp;
+	int		nbr_elem_col;
 
-	if (!list)
+	nbr_elem_col = 1;
+	tmp = list->next;
+	while (tmp->col_n == tmp->next->col_n && tmp->pos_list != 1)
 	{
-		list = list_init_first_elem(av[1]);
-		i = 2;
-		while (i < ac)
-		{
-			list_push_back_elem(&list, av[i], i);
-			i++;
-		}
+		tmp = tmp->next;
+		nbr_elem_col++;
 	}
-	return (list);
+	return (nbr_elem_col);
 }
 
-static void		print_single_list_elem(t_elem *elem)
-{
-	if (elem->selected)
-		tputs(tgetstr("mr", NULL), 1, ft_putchar_ret);
-	if (elem->cursor)
-		tputs(tgetstr("us", NULL), 1, ft_putchar_ret);
-	ft_putstr_fd(elem->name, get_tty(0));
-	if (elem->selected)
-		tputs(tgetstr("me", NULL), 1, ft_putchar_ret);
-	if (elem->cursor)
-		tputs(tgetstr("ue", NULL), 1, ft_putchar_ret);
-}
-
-void			print_arg_list(t_elem *list)
+void		list_update_pos(t_elem *list, int elem_del)
 {
 	t_elem	*tmp;
 	int		nbr_elem;
 
-	tmp = list;
 	nbr_elem = list->prev->pos_list;
-	while (nbr_elem--)
+	tmp = get_current_elem(list);
+	while (elem_del < nbr_elem)
 	{
-		move_cursor(tmp->pos_x, tmp->pos_y);
-		print_single_list_elem(tmp);
+		tmp->pos_list -= 1;
+		if (tmp->pos_y == 0 && tmp->pos_x != 0)
+		{
+			tmp->pos_x = tmp->prev->pos_x;
+			tmp->pos_y = tmp->prev->pos_y + 1;
+			tmp->col_n -= 1;
+		}
+		else
+			tmp->pos_y -= 1;
+		tmp = tmp->next;
+		elem_del++;
+	}
+}
+
+int			list_get_max_len(t_elem *list)
+{
+	int		max_len;
+	t_elem	*tmp;
+
+	max_len = list->len;
+	tmp = list->next;
+	while (tmp->pos_list != 1)
+	{
+		if (max_len < tmp->len)
+			max_len = tmp->len;
 		tmp = tmp->next;
 	}
+	return (max_len);
 }

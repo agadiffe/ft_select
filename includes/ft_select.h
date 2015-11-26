@@ -6,7 +6,7 @@
 /*   By: agadiffe <agadiffe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/10/23 21:07:09 by agadiffe          #+#    #+#             */
-/*   Updated: 2015/11/23 12:17:43 by agadiffe         ###   ########.fr       */
+/*   Updated: 2015/11/26 03:46:38 by agadiffe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,13 +45,17 @@ typedef struct		s_elem
 */
 struct termios		*get_backup(void);
 int					get_tty(int close_fd);
+void				free_list(t_elem *list);
+
+/*
+**	arrow_handle.c
+*/
+void				handle_arrow(t_elem *list, int key);
 
 /*
 **	key_handle.c
 */
 void				handle_key(t_elem **list, struct termios *backup);
-void				free_list(t_elem *list);
-int					list_get_max_len(t_elem *list);
 int					check_window_size(t_elem *list);
 
 /*
@@ -65,6 +69,14 @@ int					is_del(char *buf);
 
 /*
 **	list_function.c
+*/
+t_elem				*get_current_elem(t_elem *list);
+int					get_nbr_elem_per_col(t_elem *list);
+void				list_update_pos(t_elem *list, int elem_del);
+int					list_get_max_len(t_elem *list);
+
+/*
+**	list_create_print.c
 */
 t_elem				*get_list(int ac, char **av);
 void				print_arg_list(t_elem *list);

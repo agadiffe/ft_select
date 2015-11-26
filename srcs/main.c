@@ -6,7 +6,7 @@
 /*   By: agadiffe <agadiffe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/10/17 11:48:12 by agadiffe          #+#    #+#             */
-/*   Updated: 2015/10/31 18:42:26 by agadiffe         ###   ########.fr       */
+/*   Updated: 2015/11/26 03:45:49 by agadiffe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,20 @@ struct termios	*get_backup(void)
 	static struct termios	backup;
 
 	return (&backup);
+}
+
+void			free_list(t_elem *list)
+{
+	t_elem	*tmp;
+	int		nbr_elem;
+
+	nbr_elem = list->prev->pos_list;
+	while (nbr_elem--)
+	{
+		tmp = list->next;
+		ft_memdel((void **)&list);
+		list = tmp;
+	}
 }
 
 int				main(int ac, char **av)

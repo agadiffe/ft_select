@@ -6,7 +6,7 @@
 /*   By: agadiffe <agadiffe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/10/28 22:05:47 by agadiffe          #+#    #+#             */
-/*   Updated: 2015/11/24 21:00:15 by agadiffe         ###   ########.fr       */
+/*   Updated: 2015/11/26 03:48:50 by agadiffe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,28 +14,6 @@
 #include "ft_select.h"
 #include <stdlib.h>
 #include <unistd.h>
-
-static t_elem	*get_current_elem(t_elem *list)
-{
-	t_elem	*tmp;
-
-	tmp = list;
-	while (tmp->cursor != 1)
-		tmp = tmp->next;
-	return (tmp);
-}
-
-static void		handle_down_and_up(t_elem *list, int up_key)
-{
-	t_elem	*tmp;
-
-	tmp = get_current_elem(list);
-	tmp->cursor = 0;
-	if (up_key)
-		tmp->prev->cursor = 1;
-	else
-		tmp->next->cursor = 1;
-}
 
 static void		handle_space(t_elem *list)
 {
@@ -45,119 +23,6 @@ static void		handle_space(t_elem *list)
 	tmp->cursor = 0;
 	tmp->next->cursor = 1;
 	tmp->selected = tmp->selected ? 0 : 1;
-}
-
-static int		get_nbr_elem_per_col(t_elem *list)
-{
-	t_elem	*tmp;
-	int		nbr_elem_col;
-
-	nbr_elem_col = 1;
-	tmp = list->next;
-	while (tmp->col_n == tmp->next->col_n && tmp->pos_list != 1)
-	{
-		tmp = tmp->next;
-		nbr_elem_col++;
-	}
-	return (nbr_elem_col);
-}
-
-static void		handle_right_and_left(t_elem *list, int right)
-{
-	t_elem	*tmp;
-	int		nbr_col;
-	int		nbr_elem_col;
-	int		nbr_elem_last_col;
-	int		current_pos_elem;
-
-	nbr_col = list->prev->col_n;
-	nbr_elem_col = get_nbr_elem_per_col(list);
-	nbr_elem_last_col = list->prev->pos_y;
-	tmp = get_current_elem(list);
-	tmp->cursor = 0;
-	if (right)
-	{
-		if ((nbr_col == 0 && tmp->pos_y == nbr_elem_col - 1)
-				|| (tmp->col_n == nbr_col - 1 && tmp->pos_y > nbr_elem_last_col
-					&& tmp->col_n != tmp->next->col_n)
-				|| (tmp->pos_list == list->prev->pos_list
-					&& tmp->pos_y == nbr_elem_col))
-			list->cursor = 1;
-		else
-		{
-			current_pos_elem = tmp->pos_y;
-			if ((tmp->col_n == nbr_col - 1 && tmp->pos_y > nbr_elem_last_col)
-					|| tmp->col_n == nbr_col)
-			{
-				tmp = tmp->next;
-				current_pos_elem++;
-			}
-			tmp = tmp->next;
-			while (tmp->pos_y != current_pos_elem)
-				tmp = tmp->next;
-			tmp->cursor = 1;
-		}
-	}
-	else
-	{
-		if (tmp->pos_list == 1
-				&& (nbr_col == 0 || nbr_elem_last_col == nbr_elem_col))
-			list->prev->cursor = 1;
-		else if (tmp->pos_list == 1)
-		{
-			while (tmp->pos_y != nbr_elem_col)
-				tmp = tmp->prev;
-			tmp->cursor = 1;
-		}
-		else
-		{
-			current_pos_elem = tmp->pos_y;
-			if (tmp->col_n == 0)
-			{
-				tmp = tmp->prev;
-				current_pos_elem--;
-			}
-			tmp = tmp->prev;
-			while (tmp->pos_y != current_pos_elem)
-				tmp = tmp->prev;
-			tmp->cursor = 1;
-		}
-	}
-}
-
-static void		handle_arrow(t_elem *list, int key)
-{
-	if (key == UP_KEY)
-		handle_down_and_up(list, 1);
-	else if (key == DOWN_KEY)
-		handle_down_and_up(list, 0);
-	else if (key == RIGHT_KEY)
-		handle_right_and_left(list, 1);
-	else
-		handle_right_and_left(list, 0);
-}
-
-static void		list_update_pos(t_elem *list, int elem_del)
-{
-	t_elem	*tmp;
-	int		nbr_elem;
-
-	nbr_elem = list->prev->pos_list;
-	tmp = get_current_elem(list);
-	while (elem_del < nbr_elem)
-	{
-		tmp->pos_list -= 1;
-		if (tmp->pos_y == 0 && tmp->pos_x != 0)
-		{
-			tmp->pos_x = tmp->prev->pos_x;
-			tmp->pos_y = tmp->prev->pos_y + 1;
-			tmp->col_n -= 1;
-		}
-		else
-			tmp->pos_y -= 1;
-		tmp = tmp->next;
-		elem_del++;
-	}
 }
 
 static int		handle_del(t_elem **list)
@@ -208,36 +73,6 @@ static void		handle_rtn(t_elem *list, struct termios *backup)
 	free_list(list);
 }
 
-void			free_list(t_elem *list)
-{
-	t_elem	*tmp;
-	int		nbr_elem;
-
-	nbr_elem = list->prev->pos_list;
-	while (nbr_elem--)
-	{
-		tmp = list->next;
-		ft_memdel((void **)&list);
-		list = tmp;
-	}
-}
-
-int				list_get_max_len(t_elem *list)
-{
-	int		max_len;
-	t_elem	*tmp;
-
-	max_len = list->len;
-	tmp = list->next;
-	while (tmp->pos_list != 1)
-	{
-		if (max_len < tmp->len)
-			max_len = tmp->len;
-		tmp = tmp->next;
-	}
-	return (max_len);
-}
-
 static int		check_key(t_elem **list, struct termios *backup, char *buf)
 {
 	int		key;
@@ -260,53 +95,6 @@ static int		check_key(t_elem **list, struct termios *backup, char *buf)
 	else
 		return (0);
 	return (key);
-}
-
-static void		list_update(t_elem *list, int row_term,
-							int nbr_elem, int max_len)
-{
-	t_elem	*tmp;
-	int		i;
-	int		col;
-
-	col = 0;
-	tmp = list;
-	while (nbr_elem)
-	{
-		i = 0;
-		while (i < row_term && nbr_elem)
-		{
-			tmp->col_n = col;
-			tmp->pos_x = col * (max_len + 2);
-			tmp->pos_y = i;
-			tmp = tmp->next;
-			i++;
-			nbr_elem--;
-		}
-		col++;
-	}
-}
-
-int				check_window_size(t_elem *list)
-{
-	t_win	ws;
-	int		nbr_elem;
-	int		nbr_col;
-	int		max_len;
-
-	ws = get_window_size();
-	nbr_elem = list->prev->pos_list;
-	max_len = list_get_max_len(list);
-	list_update(list, ws.row_term, nbr_elem, max_len);
-	nbr_col = list->prev->col_n;
-	if (ws.col_term >= (nbr_col + 1) * (max_len + 2))
-		return (1);
-	else
-	{
-		move_cursor(0, 0);
-		ft_putendl_fd("No Space", get_tty(0));
-		return (0);
-	}
 }
 
 void			handle_key(t_elem **list, struct termios *backup)

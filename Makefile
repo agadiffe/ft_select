@@ -6,7 +6,7 @@
 #    By: agadiffe <agadiffe@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/05/14 20:31:10 by agadiffe          #+#    #+#              #
-#    Updated: 2015/10/31 21:32:57 by agadiffe         ###   ########.fr        #
+#    Updated: 2015/11/26 03:49:16 by agadiffe         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,13 +20,16 @@ CFLAGS += -Wall -Werror -Wextra
 
 SRC_PATH = ./srcs/
 SRC_NAME = main.c					\
+		   arrow_handle.c			\
 		   key_is.c					\
 		   key_handle.c				\
 		   termcap_init.c			\
 		   termcap_tools_reset.c	\
 		   termcap_tools_window.c	\
+		   list_create_print.c		\
 		   list_function.c			\
-		   signal.c
+		   signal.c					\
+		   windows_size.c
 
 SRC = $(addprefix $(SRC_PATH),$(SRC_NAME))
 
