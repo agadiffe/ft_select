@@ -6,7 +6,7 @@
 /*   By: agadiffe <agadiffe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/10/31 15:29:30 by agadiffe          #+#    #+#             */
-/*   Updated: 2015/12/14 01:17:58 by agadiffe         ###   ########.fr       */
+/*   Updated: 2015/12/14 02:28:37 by agadiffe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,36 +16,47 @@
 #include <signal.h>
 #include <sys/ioctl.h>
 
-static void		handle_sig(int sig)
+static void		handle_sigtstp(void)
+{
+	clear_all_screen();
+	restore_backup_term(get_backup());
+	signal(SIGTSTP, SIG_DFL);
+	ioctl(0, TIOCSTI, "\032");
+}
+
+static void		handle_sigcont(void)
 {
 	struct termios	term;
 	int				enought_space;
 
+	check_signal();
+	init_term();
+	set_term_in_non_canonic_mode(&term, get_backup());
+	move_cursor(0, 0);
+	clear_all_screen();
+	enought_space = check_window_size(get_list(0, NULL));
+	if (enought_space)
+		print_arg_list(get_list(0, NULL));
+}
+
+static void		handle_sigwinch(void)
+{
+	int		enought_space;
+
+	clear_all_screen();
+	enought_space = check_window_size(get_list(0, NULL));
+	if (enought_space)
+		print_arg_list(get_list(0, NULL));
+}
+
+static void		handle_sig(int sig)
+{
 	if (sig == SIGTSTP)
-	{
-		clear_all_screen();
-		restore_backup_term(get_backup());
-		signal(SIGTSTP, SIG_DFL);
-		ioctl(0, TIOCSTI, "\032");
-	}
+		handle_sigtstp();
 	else if (sig == SIGCONT)
-	{
-		check_signal();
-		init_term();
-		set_term_in_non_canonic_mode(&term, get_backup());
-		move_cursor(0, 0);
-		clear_all_screen();
-		enought_space = check_window_size(get_list(0, NULL));
-		if (enought_space)
-			print_arg_list(get_list(0, NULL));
-	}
+		handle_sigcont();
 	else if (sig == SIGWINCH)
-	{
-		clear_all_screen();
-		enought_space = check_window_size(get_list(0, NULL));
-		if (enought_space)
-			print_arg_list(get_list(0, NULL));
-	}
+		handle_sigwinch();
 	else
 	{
 		clear_all_screen();
