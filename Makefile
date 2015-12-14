@@ -6,7 +6,7 @@
 #    By: agadiffe <agadiffe@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/05/14 20:31:10 by agadiffe          #+#    #+#              #
-#    Updated: 2015/11/26 03:49:16 by agadiffe         ###   ########.fr        #
+#    Updated: 2015/11/29 20:03:16 by agadiffe         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,7 +26,8 @@ SRC_NAME = main.c					\
 		   termcap_init.c			\
 		   termcap_tools_reset.c	\
 		   termcap_tools_window.c	\
-		   list_create_print.c		\
+		   list_create.c			\
+		   list_print.c				\
 		   list_function.c			\
 		   signal.c					\
 		   windows_size.c

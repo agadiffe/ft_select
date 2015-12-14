@@ -6,7 +6,7 @@
 /*   By: agadiffe <agadiffe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/10/23 21:07:09 by agadiffe          #+#    #+#             */
-/*   Updated: 2015/11/26 03:46:38 by agadiffe         ###   ########.fr       */
+/*   Updated: 2015/11/29 19:35:24 by agadiffe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ typedef struct		s_elem
 	struct s_elem	*next;
 	struct s_elem	*prev;
 	char			*name;
+	char			*color;
 	int				len;
 	int				pos_x;
 	int				pos_y;
