@@ -6,7 +6,7 @@
 /*   By: agadiffe <agadiffe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/10/31 15:29:30 by agadiffe          #+#    #+#             */
-/*   Updated: 2015/12/14 02:28:37 by agadiffe         ###   ########.fr       */
+/*   Updated: 2015/12/14 20:39:20 by agadiffe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@
 
 static void		handle_sigtstp(void)
 {
-	clear_all_screen();
 	restore_backup_term(get_backup());
 	signal(SIGTSTP, SIG_DFL);
 	ioctl(0, TIOCSTI, "\032");

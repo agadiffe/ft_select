@@ -6,7 +6,7 @@
 /*   By: agadiffe <agadiffe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/10/28 21:28:59 by agadiffe          #+#    #+#             */
-/*   Updated: 2015/12/14 00:27:22 by agadiffe         ###   ########.fr       */
+/*   Updated: 2015/12/14 21:18:48 by agadiffe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void	set_term_in_non_canonic_mode(struct termios *term,
 {
 	if (tcgetattr(0, term) == -1)
 		ft_error("Can't get terminal info", 1);
-	*backup = *term;
+	ft_memcpy(backup, term, sizeof(struct termios));
 	term->c_lflag &= ~(ICANON | ECHO);
 	term->c_cc[VMIN] = 1;
 	term->c_cc[VTIME] = 0;

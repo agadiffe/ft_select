@@ -6,7 +6,7 @@
 #    By: agadiffe <agadiffe@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/05/14 20:31:10 by agadiffe          #+#    #+#              #
-#    Updated: 2015/11/29 20:03:16 by agadiffe         ###   ########.fr        #
+#    Updated: 2015/12/14 19:38:34 by agadiffe         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -48,7 +48,7 @@ LIBFT_INC_PATH = ./libft/includes/
 LIBFT = $(addprefix -L,$(LIBFT_PATH))
 LIBFT_INC = $(addprefix -I,$(LIBFT_INC_PATH))
 
-ifeq ($(shell uname), Linux)
+ifeq ($(shell uname -a | cut -c1-11), Linux nixos)
 CFLAGS += $(shell pkg-config ncurses --cflags)
 TERMCAP_LIB += $(shell pkg-config ncurses --libs)
 else
