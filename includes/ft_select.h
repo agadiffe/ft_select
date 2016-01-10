@@ -6,7 +6,7 @@
 /*   By: agadiffe <agadiffe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/10/23 21:07:09 by agadiffe          #+#    #+#             */
-/*   Updated: 2015/11/29 19:35:24 by agadiffe         ###   ########.fr       */
+/*   Updated: 2016/01/10 19:57:18 by agadiffe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,11 @@ void				handle_arrow(t_elem *list, int key);
 **	key_handle.c
 */
 void				handle_key(t_elem **list, struct termios *backup);
+
+/*
+**	key_handle.c
+*/
+int					*get_enought_space(void);
 int					check_window_size(t_elem *list);
 
 /*

@@ -6,7 +6,7 @@
 /*   By: agadiffe <agadiffe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/10/28 22:05:47 by agadiffe          #+#    #+#             */
-/*   Updated: 2015/11/26 03:48:50 by agadiffe         ###   ########.fr       */
+/*   Updated: 2016/01/10 19:58:41 by agadiffe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,19 +101,21 @@ void			handle_key(t_elem **list, struct termios *backup)
 {
 	char	*buf;
 	int		update_screen;
-	int		enought_space;
+	int		*enought_space;
 
-	enought_space = check_window_size(*list);
 	buf = ft_strnew(4);
 	update_screen = 1;
+	enought_space = get_enought_space();
 	while (!is_esc(buf))
 	{
-		if (update_screen && enought_space)
+		*enought_space = check_window_size(*list);
+		if (update_screen && *enought_space)
 			print_arg_list(*list);
 		ft_bzero(buf, ft_strlen(buf));
 		if (read(0, buf, 3) == -1)
 			ft_error("Read error", 1);
-		if ((update_screen = check_key(list, backup, buf)) == -1)
+		if (*enought_space
+				&& (update_screen = check_key(list, backup, buf)) == -1)
 			break ;
 	}
 	ft_strdel(&buf);

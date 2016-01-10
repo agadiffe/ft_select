@@ -6,12 +6,19 @@
 /*   By: agadiffe <agadiffe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/11/26 03:47:55 by agadiffe          #+#    #+#             */
-/*   Updated: 2015/11/26 03:51:54 by agadiffe         ###   ########.fr       */
+/*   Updated: 2016/01/10 20:00:34 by agadiffe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 #include "ft_select.h"
+
+int				*get_enought_space(void)
+{
+	static int		enought_space;
+
+	return (&enought_space);
+}
 
 static void		list_update(t_elem *list, int row_term,
 							int nbr_elem, int max_len)
