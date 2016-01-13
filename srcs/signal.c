@@ -6,7 +6,7 @@
 /*   By: agadiffe <agadiffe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/10/31 15:29:30 by agadiffe          #+#    #+#             */
-/*   Updated: 2016/01/10 19:59:47 by agadiffe         ###   ########.fr       */
+/*   Updated: 2016/01/13 12:22:21 by agadiffe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ static void		handle_sigcont(void)
 
 static void		handle_sigwinch(void)
 {
-	int		enought_space;
+	int		*enought_space;
 
 	clear_all_screen();
 	enought_space = get_enought_space();
